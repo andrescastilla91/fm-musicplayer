@@ -1,18 +1,26 @@
 name: Generar .env
 
 on:
-  workflow_dispatch:  # lo podrás ejecutar manualmente
+  workflow_dispatch:
 
 jobs:
   generar-env:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout del repositorio (necesario aunque no uses archivos del repo)
+        uses: actions/checkout@v4
+
       - name: Crear archivo .env desde Secrets
         run: |
           echo "apiKey=${{ secrets.APIKEY }}" >> .env
-          
+        shell: bash
+
+      - name: Verificar contenido del archivo
+        run: cat .env
+
       - name: Subir archivo .env como artefacto
         uses: actions/upload-artifact@v4
         with:
           name: archivo-env
           path: .env
+
