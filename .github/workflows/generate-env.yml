@@ -11,9 +11,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Crear archivo .env desde Secrets
-        shell: bash
         run: |
-          echo "apiKey=${{ secrets.APIKEY }}" >> .env
+          echo "::group::Contenido generado"
+          echo "API_URL=${{ secrets.APIKEY }}" | tee -a .env
+          echo "::endgroup::"
 
       - name: Verificar existencia del archivo
         run: |
