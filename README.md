@@ -50,7 +50,7 @@
   npm install
   ```
 3. Configura las variables de entorno:
-- Crea src/environments/environment.ts con tus credenciales de Firebase y Spotify:
+- Crea src/environments/environment.development.ts con tus credenciales de Firebase y Spotify:
 - Pega las credenciales entregadas por el desarrollador
 
 ```json
