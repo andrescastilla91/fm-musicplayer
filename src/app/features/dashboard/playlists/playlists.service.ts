@@ -1,5 +1,7 @@
 import { inject, Injectable } from "@angular/core";
-import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc, DocumentReference } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, doc, deleteDoc, updateDoc, DocumentReference, query, where } from '@angular/fire/firestore';
+import { KeySessionDataEnum } from "@core/interfaces/auth.interface";
+import { AuthService } from "@core/services/auth.service";
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,14 +10,17 @@ import { Observable } from 'rxjs';
 export class PlaylistsService {
 
   private readonly firestore = inject(Firestore);
+  private readonly authService = inject(AuthService);
 
   /**
    * Get all playlists for the user (you can filter by user if needed)
    * @returns Observable of playlists
    */
   public getPlaylists(): Observable<any[]> {
+    const user = this.authService.getSessionData(KeySessionDataEnum.UserData);
     const playlistsRef = collection(this.firestore, 'playlists');
-    return collectionData(playlistsRef, { idField: 'id' });
+    const q = query(playlistsRef, where('uid', '==', user.uid));
+    return collectionData(q, { idField: 'id' });
   }
 
   /**
@@ -24,8 +29,9 @@ export class PlaylistsService {
    * @returns Observable of the playlist
    */
   public createPlaylist(data: any): Promise<DocumentReference<any>> {
+    const user = this.authService.getSessionData(KeySessionDataEnum.UserData);
     const playlistsRef = collection(this.firestore, 'playlists');
-    return addDoc(playlistsRef, data);
+    return addDoc(playlistsRef, { ...data, uid: user.uid });
   }
 
   /**
