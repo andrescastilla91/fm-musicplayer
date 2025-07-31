@@ -11,6 +11,9 @@
 npm-debug.log
 yarn-error.log
 
+# environment files
+/src/environments/environment.development.ts
+
 # IDEs and editors
 .idea/
 .project
@@ -40,3 +43,8 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json

@@ -1,0 +1,67 @@
+<section class="w-full max-w-7xl mx-auto p-4 flex flex-col gap-8">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+    <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4">
+      <h1 class="text-3xl font-extrabold text-center md:text-left bg-gradient-to-r from-fuchsia-500 via-pink-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg">
+        <span class="inline-block align-middle">🎶</span> Mis listas de reproducción
+      </h1>
+      <button type="button" (click)="goToSongFinder()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-semibold shadow hover:bg-indigo-200 transition-colors">
+        <lucide-icon name="search" class="w-5 h-5" />
+        Buscar canciones
+      </button>
+    </div>
+    <button type="button" (click)="showModal.set(true)" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-fuchsia-100 text-fuchsia-700 font-semibold shadow hover:bg-fuchsia-200 transition-colors">
+      <lucide-icon name="plus-circle" class="w-5 h-5" />
+      Nueva lista
+    </button>
+  </div>
+  
+  @if (showModal()) {
+    <app-new-playlist-modal (close)="showModal.set(false)"></app-new-playlist-modal>
+  }
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-10">
+      <lucide-icon name="loader-2" class="animate-spin w-10 h-10 text-fuchsia-400" aria-label="Cargando..." />
+    </div>
+  }@else {
+    <ul class="flex flex-col gap-6">
+      @for (playlist of userPlaylists(); track playlist.name) {
+        <li class="bg-white shadow-lg rounded-xl p-6 flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <h2 class="font-bold text-xl text-fuchsia-700 flex-1 capitalize">{{ playlist.name }}</h2>
+            <span class="text-gray-500 text-sm">{{ playlist.songs.length }} canciones</span>
+            <button type="button" (click)="deletePlaylist(playlist)" class="ml-2 text-red-400 hover:text-red-700 p-1 rounded-full transition-colors" title="Eliminar lista">
+              <lucide-icon name="trash" class="w-5 h-5" />
+            </button>
+          </div>
+          <p class="text-gray-600 mb-2">{{ playlist.description }}</p>
+          <ul class="flex flex-wrap gap-3">
+            @if (playlist.songs.length > 0) {
+              @for (song of playlist.songs; track song.id) {
+                <li class="flex items-center gap-2 bg-fuchsia-50 border border-fuchsia-100 rounded-lg px-3 py-2 w-full">
+                  @if(song.album.images[0].url) {
+                    <img [src]="song.album.images[0].url" alt="Portada" class="w-8 h-8 rounded object-cover border flex-shrink-0" />
+                  }
+                  <div class="flex-1 min-w-0">
+                    <span class="font-medium block truncate max-w-[200px] sm:max-w-[180px] md:max-w-[300px]">{{ song.name }}</span>
+                    <span class="text-xs text-gray-500 block truncate max-w-[200px] sm:max-w-[180px] md:max-w-[220px]">&ndash; {{ song.artists[0].name }}</span>
+                  </div>
+                  <button type="button" (click)="removeSongFromPlaylist(playlist, song)" class="ml-1 text-fuchsia-400 hover:text-fuchsia-700 p-1 rounded-full transition-colors" title="Eliminar canción">
+                    <lucide-icon name="trash-2" class="w-4 h-4" />
+                  </button>
+                </li>
+              }
+            }@else{
+              <li class="text-gray-400 italic">Sin canciones en esta lista</li>
+            }
+          </ul>
+        </li>
+      }@empty {
+        <div class="flex flex-col items-center justify-center mt-12 gap-2">
+          <lucide-icon name="image-off" class="w-12 h-12 text-gray-400" aria-label="Sin resultados" />
+          <p class="text-center text-gray-500 text-lg">No tienes playlists creadas aún.</p>
+        </div>
+      }
+    </ul>
+  }
+</section>
