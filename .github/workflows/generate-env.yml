@@ -7,20 +7,22 @@ jobs:
   generar-env:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del repositorio (necesario aunque no uses archivos del repo)
+      - name: Checkout del repositorio
         uses: actions/checkout@v4
 
       - name: Crear archivo .env desde Secrets
+        shell: bash
         run: |
           echo "apiKey=${{ secrets.APIKEY }}" >> .env
-        shell: bash
 
-      - name: Verificar contenido del archivo
-        run: cat .env
+      - name: Verificar existencia del archivo
+        run: |
+          echo "Contenido del archivo .env:"
+          ls -la
+          cat .env || echo "❌ Archivo .env no encontrado"
 
       - name: Subir archivo .env como artefacto
         uses: actions/upload-artifact@v4
         with:
           name: archivo-env
           path: .env
-
