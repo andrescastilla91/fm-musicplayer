@@ -1,29 +1,15 @@
-name: Generar .env
+name: Test .env básico
 
 on:
   workflow_dispatch:
 
 jobs:
-  generar-env:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
-
-      - name: Crear archivo .env desde Secrets
-        run: |
-          echo "::group::Contenido generado"
-          echo "API_URL=${{ secrets.APIKEY }}" | tee -a .env
-          echo "::endgroup::"
-
-      - name: Verificar existencia del archivo
-        run: |
-          echo "Contenido del archivo .env:"
-          ls -la
-          cat .env || echo "❌ Archivo .env no encontrado"
-
-      - name: Subir archivo .env como artefacto
-        uses: actions/upload-artifact@v4
+      - run: echo "API_URL=${{ secrets.API_URL }}" > .env
+      - run: cat .env
+      - uses: actions/upload-artifact@v4
         with:
-          name: archivo-env
+          name: test-env
           path: .env
