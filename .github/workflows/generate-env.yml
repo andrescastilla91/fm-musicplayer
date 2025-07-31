@@ -7,7 +7,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "API_URL=${{ secrets.API_URL }}" > .env
+      - run: echo "API_URL=${{ secrets.APIKEY }}" > .env
       - run: cat .env
       - uses: actions/upload-artifact@v4
         with:
