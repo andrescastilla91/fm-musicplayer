@@ -7,9 +7,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "API_URL=${{ secrets.APIKEY }}" > .env
-      - run: cat .env
-      - uses: actions/upload-artifact@v4
+      - name: Mostrar ubicación actual
+        run: |
+          echo "PWD: $PWD"
+          ls -la
+
+      - name: Crear .env en $GITHUB_WORKSPACE
+        run: |
+          echo "API_URL=${{ secrets.APIKEY }}" > $GITHUB_WORKSPACE/.env
+          echo "Contenido generado:"
+          cat $GITHUB_WORKSPACE/.env
+          ls -la $GITHUB_WORKSPACE
+
+      - name: Subir archivo .env como artifact
+        uses: actions/upload-artifact@v4
         with:
           name: test-env
-          path: .env
+          path: ${{ github.workspace }}/.env
